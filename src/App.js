@@ -1,50 +1,53 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+// import logo from './logo.svg';
+import { useState } from 'react';
+import './App.css';
+import Alert from './components/Alert';
+import Navbar from './components/Navbar';
+ import Textform from './components/Textform';
+ import About from './components/About';
+// import React,{useState} from 'react';
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+
+function App() {
+  const[mode,setmode]=useState('light');
+  const[alert,setAlert]=useState(null);
+  const showAlert=(message,type)=>{
+    setAlert({
+      msg:message, 
+      type:type
+    })
+    setTimeout(() => {
+      setAlert(null)
+    }, 1500);
+  }
+  const toggleMode = ()=>{
+    if (mode==='light'){
+      setmode('dark')
+      document.body.style.backgroundColor='#042743';
+      showAlert("Dark mode has been enabled","success")
+    }
+    else {
+      setmode('light')
+      document.body.style.backgroundColor='white';
+      showAlert("Light mode has been enabled","success")
+    }
   }
 
-  handleClick = api => e => {
-    e.preventDefault()
-
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
-
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
-  }
-}
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
+  return (
+    <>
+    
+   <Navbar title="TextUtils"mode={mode} toggleMode={toggleMode}/>
+   <Alert alert={alert}/>
+      <div className="container my-5" >
+      <Textform showAlert={showAlert} heading="Enter text" mode={mode}/>
+    {/* <About/> */}
+     
       </div>
-    )
-  }
+      
+       
+
+    </>
+  );
 }
 
-export default App
+export default App;
